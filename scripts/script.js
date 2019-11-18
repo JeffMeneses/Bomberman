@@ -12,26 +12,29 @@
 
     // Imagens
 
-    var img = new Image();
-    var img2 = new Image();
-    var img3 = new Image();
+    var imgWall = new Image();
+    var imgFixedWall = new Image();
+    var imgGrass = new Image();
     var imgBomberman = new Image();
 
-    img3.src = "imgs/wall.png";
-    img2.src = "imgs/fixedWall.png"
-    img.src = "imgs/grass.png";
+    imgGrass.src = "imgs/wall.png";
+    imgFixedWall.src = "imgs/fixedWall.png"
+    imgWall.src = "imgs/grass.png";
     imgBomberman.src = "imgs/bomberman.png"
-
-    img.addEventListener("load", function(){
-        requestAnimationFrame(loop, cnv);
-    },false);
-
 
     var sprites = [];
     var walls = [];
     var fixedWalls = [];
     var bombs = [];
     var tileSize = 50;
+
+    imgWall.addEventListener("load", function(){
+        console.log(walls);
+        requestAnimationFrame(loop, cnv);
+    },false);
+
+
+    
 
     var map =   [
                 [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], 
@@ -47,8 +50,33 @@
                 [0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0]
                 ];
 
+    for (var i in map)
+    {
+        for (var j in map[i])
+        {
+            var tile = map[i][j];
+
+            if(tile === 1) // Wall
+            {
+                var x = j * tileSize;
+                var y = i * tileSize;
+
+                var wall = new Wall(x, y, tileSize, tileSize, "#7a1672");
+                walls.push(wall);
+            }
+            else if(tile === 2) // FixedWall
+            {
+                var x = j * tileSize;
+                var y = i * tileSize;
+
+                var fixedWall = new FixedWall(x, y, tileSize, tileSize, "#01005a");
+                fixedWalls.push(fixedWall);
+            }
+        }
+    }
+
     // Criação de sprites
-    var player = new Character(2, 2, 40, 40, "#c3b831");
+    var player = new Character(0, 0, 50, 50, "#c3b831");
     sprites.push(player);
 
     function block(objA, objB)
@@ -216,7 +244,7 @@
                     var y = i * tileSize;
 
                     ctx.drawImage(
-                        img, 
+                        imgWall, 
                         x, y
                     );
                 }
@@ -226,11 +254,8 @@
                     var x = j * tileSize;
                     var y = i * tileSize;
 
-                    var wall = new Wall(x, y, tileSize, tileSize, "#7a1672");
-                    walls.push(wall);
-
                     ctx.drawImage(
-                        img3, 
+                        imgGrass, 
                         x, y
                     );
                }
@@ -239,11 +264,8 @@
                     var x = j * tileSize;
                     var y = i * tileSize;
 
-                    var fixedWall = new FixedWall(x, y, tileSize, tileSize, "#01005a");
-                    fixedWalls.push(fixedWall);
-
                     ctx.drawImage(
-                        img2, 
+                        imgFixedWall, 
                         x, y
                     );
                }
@@ -269,7 +291,7 @@
             
             ctx.drawImage(
                 imgBomberman, 
-                spr.posX, spr.posY, 33, 50
+                spr.posX, spr.posY, 50, 50
             );
         }
 
