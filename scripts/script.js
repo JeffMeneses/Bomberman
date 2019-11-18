@@ -2,6 +2,7 @@
 {
     // Variáveis
     var cnv = document.querySelector("canvas");
+    cnv.style.width = "80vmin";
     var ctx = cnv.getContext("2d");
     
     // Teclas
@@ -20,7 +21,7 @@
     imgGrass.src = "imgs/wall.png";
     imgFixedWall.src = "imgs/fixedWall.png"
     imgWall.src = "imgs/grass.png";
-    imgBomberman.src = "imgs/bomberman.png"
+    imgBomberman.src = "imgs/Player1V3.png"
 
     var sprites = [];
     var walls = [];
@@ -76,7 +77,7 @@
     }
 
     // Criação de sprites
-    var player = new Character(0, 0, 50, 50, "#c3b831");
+    var player = new Character(0, 0, 50, 50, "#c3b831", 0, 0);
     sprites.push(player);
 
     function block(objA, objB)
@@ -177,19 +178,38 @@
         if(mvLeft && !mvRight)
         {
             player.posX -= player.speed;
+            sprites[0].srcY = 100;
         }
         else if(mvRight && !mvLeft)
         {
             player.posX += player.speed;
+            sprites[0].srcY = 34;
         }
 
         if(mvUp && !mvDown)
         {
             player.posY -= player.speed;
+            sprites[0].srcY = 66;
         }
         else if(mvDown && !mvUp)
         {
             player.posY += player.speed;
+            sprites[0].srcY = 0;
+        }
+
+        if((mvLeft || mvRight || mvUp || mvDown))
+        {
+            player.countAnimation++;
+
+            if(player.countAnimation >= 40)
+                player.countAnimation = 0;
+            player.srcX = Math.floor(player.countAnimation/5) * 20;
+        }
+        else
+        {   
+            sprites[0].srcY = 0;
+            sprites[0].srcX = 0;
+            player.countAnimation = 0;  
         }
 
         if(bombFlag)
@@ -291,8 +311,9 @@
             
             ctx.drawImage(
                 imgBomberman, 
-                spr.posX, spr.posY, 50, 50
+                spr.srcX, spr.srcY, 22, 32, spr.posX, spr.posY, 50, 50
             );
+            //(img,sx,sy,swidth,sheight,x,y,width,height);
         }
 
         
