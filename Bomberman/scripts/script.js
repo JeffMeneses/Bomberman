@@ -2,6 +2,7 @@
 {
     // Variáveis
     var cnv = document.querySelector("canvas");
+    cnv.style.width = "80vmin";
     var ctx = cnv.getContext("2d");
     
     // Teclas
@@ -9,33 +10,35 @@
 
     // Movimentos
     var mvLeft = mvUp = mvRight = mvDown = bombFlag = false;
-	
 	var primeiraVez = 0;
 
     // Imagens
 
-    var img = new Image();
-    var img2 = new Image();
-    var img3 = new Image();
+    var imgWall = new Image();
+    var imgFixedWall = new Image();
+    var imgGrass = new Image();
     var imgBomberman = new Image();
 	var imgBomb = new Image();
 
-    img3.src = "imgs/wall.png";
-    img2.src = "imgs/fixedWall.png"
-    img.src = "imgs/grass.png";
-    imgBomberman.src = "imgs/bomberman.png"
+    imgGrass.src = "imgs/wall.png";
+    imgFixedWall.src = "imgs/fixedWall.png"
+    imgWall.src = "imgs/grass.png";
+    imgBomberman.src = "imgs/Player1V3.png"
 	imgBomb.src = "imgs/bomb.png";
-
-    img.addEventListener("load", function(){
-        requestAnimationFrame(loop, cnv);
-    },false);
-
 
     var sprites = [];
     var walls = [];
     var fixedWalls = [];
     var bombs = [];
     var tileSize = 50;
+
+    imgWall.addEventListener("load", function(){
+        console.log(walls);
+        requestAnimationFrame(loop, cnv);
+    },false);
+
+
+    
 
     var map =   [
                 [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], 
@@ -51,8 +54,33 @@
                 [0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0]
                 ];
 
+    for (var i in map)
+    {
+        for (var j in map[i])
+        {
+            var tile = map[i][j];
+
+            if(tile === 1) // Wall
+            {
+                var x = j * tileSize;
+                var y = i * tileSize;
+
+                var wall = new Wall(x, y, tileSize, tileSize, "#7a1672");
+                walls.push(wall);
+            }
+            else if(tile === 2) // FixedWall
+            {
+                var x = j * tileSize;
+                var y = i * tileSize;
+
+                var fixedWall = new FixedWall(x, y, tileSize, tileSize, "#01005a");
+                fixedWalls.push(fixedWall);
+            }
+        }
+    }
+
     // Criação de sprites
-    var player = new Character(2, 2, 40, 40, "#c3b831");
+    var player = new Character(0, 0, 50, 50, "#c3b831", 0, 0);
     sprites.push(player);
 
     function block(objA, objB)
@@ -153,19 +181,38 @@
         if(mvLeft && !mvRight)
         {
             player.posX -= player.speed;
+            sprites[0].srcY = 100;
         }
         else if(mvRight && !mvLeft)
         {
             player.posX += player.speed;
+            sprites[0].srcY = 34;
         }
 
         if(mvUp && !mvDown)
         {
             player.posY -= player.speed;
+            sprites[0].srcY = 66;
         }
         else if(mvDown && !mvUp)
         {
             player.posY += player.speed;
+            sprites[0].srcY = 0;
+        }
+
+        if((mvLeft || mvRight || mvUp || mvDown))
+        {
+            player.countAnimation++;
+
+            if(player.countAnimation >= 40)
+                player.countAnimation = 0;
+            player.srcX = Math.floor(player.countAnimation/5) * 20;
+        }
+        else
+        {   
+            sprites[0].srcY = 0;
+            sprites[0].srcX = 0;
+            player.countAnimation = 0;  
         }
 
         if(bombFlag)
@@ -183,8 +230,8 @@
         for (var i in bombs)
         {
             var bomb = bombs[i];
-			
-			if (colisaoBomba(bomb, player)== 0)
+
+            if (colisaoBomba(bomb, player)== 0)
 			{
 				if(bomb.tempo == 0)
 				{
@@ -217,7 +264,6 @@
             var fixedWall = fixedWalls[i];
             block(player, fixedWall);
         }
-		
 		primeiraVez++;
     }
 
@@ -237,7 +283,7 @@
                     var y = i * tileSize;
 
                     ctx.drawImage(
-                        img, 
+                        imgWall, 
                         x, y
                     );
                 }
@@ -247,11 +293,8 @@
                     var x = j * tileSize;
                     var y = i * tileSize;
 
-                    var wall = new Wall(x, y, tileSize, tileSize, "#7a1672");
-                    walls.push(wall);
-
                     ctx.drawImage(
-                        img3, 
+                        imgGrass, 
                         x, y
                     );
                }
@@ -260,11 +303,8 @@
                     var x = j * tileSize;
                     var y = i * tileSize;
 
-                    var fixedWall = new FixedWall(x, y, tileSize, tileSize, "#01005a");
-                    fixedWalls.push(fixedWall);
-
                     ctx.drawImage(
-                        img2, 
+                        imgFixedWall, 
                         x, y
                     );
                }
@@ -275,35 +315,29 @@
 
         for (var i in bombs)
         {
-            var bomb = bombs[i];			
-			
-			
+            var bomb = bombs[i];
+
             if(bomb.tempo)
-            {  
-				ctx.drawImage(
+            {
+                ctx.drawImage(
 						imgBomb, 
 						bomb.posX, bomb.posY, 33, 50
 				); // printa bomba
-					
             }  
-		
         }
 
         for (var i in sprites)
         {
             spr = sprites[i];
-			
+            
             ctx.drawImage(
                 imgBomberman, 
-                spr.posX, spr.posY, 33, 50
+                spr.srcX, spr.srcY, 22, 32, spr.posX, spr.posY, 50, 50
             );
+            //(img,sx,sy,swidth,sheight,x,y,width,height);
         }
-   
-        
 
-    }
-	
-	
+	}
 	
 	function colisaoBomba(bomb, player)
 	{
@@ -321,7 +355,7 @@
 		}
 		else
 		{ 
-			console.log("else");
+			//console.log("else");
 			block(player, bomb);
 			return 1;
 		}	
@@ -329,5 +363,9 @@
 		
 		
 	}
+        
+        
+
+    
 
 }());
