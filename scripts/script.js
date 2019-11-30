@@ -10,6 +10,7 @@
 
     // Movimentos
     var mvLeft = mvUp = mvRight = mvDown = bombFlag = false;
+	var primeiraVez = 0;
 
     // Imagens
 
@@ -17,11 +18,13 @@
     var imgFixedWall = new Image();
     var imgGrass = new Image();
     var imgBomberman = new Image();
+	var imgBomb = new Image();
 
     imgGrass.src = "imgs/wall.png";
     imgFixedWall.src = "imgs/fixedWall.png"
     imgWall.src = "imgs/grass.png";
     imgBomberman.src = "imgs/Player1V3.png"
+	imgBomb.src = "imgs/bomb.png";
 
     var sprites = [];
     var walls = [];
@@ -215,6 +218,7 @@
         if(bombFlag)
         {
             var bomb = new Bomb(player.posX, player.posY, 40, 40);
+			bomb.bombPosition(tileSize,player.posX, player.posY);
             bombs.push(bomb);
             bombFlag = false;
         }
@@ -227,10 +231,24 @@
         {
             var bomb = bombs[i];
 
+            if (colisaoBomba(bomb, player)== 0)
+			{
+				if(bomb.tempo == 0)
+				{
+					console.log("O Jogador Morreu!");
+					break;
+				}
+			}
+
             if(bomb.tempo)
             {
                 bomb.tempo -= 1;
-            }  
+				
+            } 
+			else
+			{
+				bombs.splice(i,1);
+			}
         }
 
         for(var i in walls)
@@ -246,6 +264,7 @@
             var fixedWall = fixedWalls[i];
             block(player, fixedWall);
         }
+		primeiraVez++;
     }
 
     function render()
@@ -300,7 +319,10 @@
 
             if(bomb.tempo)
             {
-                ctx.fillStyle = "#01005a";
+                /*ctx.drawImage(
+						imgBomb, 
+						bomb.posX, bomb.posY, 33, 50
+                ); // printa bomba*/
                 ctx.fillRect(bomb.posX, bomb.posY, bomb.width, bomb.height);
             }  
         }
@@ -316,10 +338,34 @@
             //(img,sx,sy,swidth,sheight,x,y,width,height);
         }
 
+	}
+	
+	function colisaoBomba(bomb, player)
+	{
+
+        console.log("Bomba[posX] = "+bomb.posX+"  Bomba[posY] = "+bomb.posY);
+				
+		var casaDestYOLD = ((Math.floor(player.posY/tileSize) * tileSize) + tileSize/2) - 20;		
+        var casaDestXOLD = ((Math.floor(player.posX/tileSize) * tileSize) + tileSize/2) - 20;
+
+        var DistX = Math.abs((bomb.posX + bomb.width/2) - (player.posX + player.width/2));
+        var DistY = Math.abs((bomb.posY + bomb.height/2) - (player.posY + player.height/2));
         
+        //console.log("DistX = "+casaDestX+"  DistY = "+casaDestY);
+        
+        if((DistX > (bomb.width)) || (DistY > (bomb.height)))
+        {
+            block(player, bomb);
+        }
+        
+        return 1;
+		
+		
+		
+	}
         
         
 
-    }
+    
 
 }());
