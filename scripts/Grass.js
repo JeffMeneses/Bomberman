@@ -1,8 +1,7 @@
-class Wall extends Sprite
+class Grass extends Sprite
 {
     constructor(posX, posY, width, height, color)
     {
         super(posX, posY, width, height, color);
     }
-	
 }
