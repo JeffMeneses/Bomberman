@@ -1,3 +1,5 @@
+var Sprite = require('./Sprite')
+
 class Character extends Sprite
 {
     constructor(posX, posY, width, height, color, srcX, srcY)
@@ -9,3 +11,5 @@ class Character extends Sprite
         this.countAnimation = 0;
     }
 }
+
+module.exports = Character;

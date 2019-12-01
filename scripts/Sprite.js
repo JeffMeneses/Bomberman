@@ -10,3 +10,5 @@ class Sprite
         this.visible = true;
     }
 }
+
+module.exports = Sprite

@@ -3,11 +3,13 @@
     // Client
     let connected = false;
     //const socket = io();
+    let sessionID;
     const socket = io()
     let game;
     let totalPlayersCount = '';
 
     socket.on('connect', () => {
+        sessionID = socket.id;
         connected = true
         console.log('> Connected to server')
     })
@@ -16,21 +18,6 @@
         console.log('> Disconnected')
         connected = false
     })
-
-    socket.on('alo-uhu', function()
-    {
-        console.log('uhu');
-    })
-
-    socket.on('add-player', function()
-    {
-        console.log('> Calling add-player');
-        var player = new Character(0, 0, 50, 50, "#c3b831", 0, 0);
-        game.players[socket.id]= player;
-    })
-
-    socket.emit('game-update', game)
-
 
     // INICIANDO GAME
     socket.on('boot', function(gameInicialState)
@@ -41,6 +28,14 @@
     })
 
     // FIM INICIANDO GAME
+
+    socket.on('player-update', (player) => {
+        if(connected)
+        game.players[player.socketId] = player.newState;
+    })
+
+
+    
 
     // Variáveis
     var cnv = document.querySelector("canvas");
@@ -219,61 +214,65 @@
 
     function update()
     {
-        
         if(mvLeft && !mvRight)
         {
-            game.players[socket.id].posX -= game.players[socket.id].speed;
-            game.players[socket.id].srcY = 100;
+            game.players[sessionID].posX -= game.players[sessionID].speed;
+            game.players[sessionID].srcY = 100;
+            socket.emit('player-move', 'left', walls, fixedWalls);
         }
         else if(mvRight && !mvLeft)
         {
-            game.players[socket.id].posX += game.players[socket.id].speed;
-            game.players[socket.id].srcY = 34;
+            game.players[sessionID].posX += game.players[sessionID].speed;
+            game.players[sessionID].srcY = 34;
+            socket.emit('player-move', 'right', walls, fixedWalls);
         }
 
         if(mvUp && !mvDown)
         {
-            game.players[socket.id].posY -= game.players[socket.id].speed;
-            game.players[socket.id].srcY = 66;
+            game.players[sessionID].posY -= game.players[sessionID].speed;
+            game.players[sessionID].srcY = 66;
+            socket.emit('player-move', 'up', walls, fixedWalls);
         }
         else if(mvDown && !mvUp)
         {
-            game.players[socket.id].posY += game.players[socket.id].speed;
-            game.players[socket.id].srcY = 0;
+            game.players[sessionID].posY += game.players[sessionID].speed;
+            game.players[sessionID].srcY = 0;
+            socket.emit('player-move', 'down', walls, fixedWalls);
         }
 
         if((mvLeft || mvRight || mvUp || mvDown))
         {
-            game.players[socket.id].countAnimation++;
+            game.players[sessionID].countAnimation++;
 
-            if(game.players[socket.id].countAnimation >= 40)
-                game.players[socket.id].countAnimation = 0;
-            game.players[socket.id].srcX = Math.floor(game.players[socket.id].countAnimation/5) * 20;
+            if(game.players[sessionID].countAnimation >= 40)
+                game.players[sessionID].countAnimation = 0;
+            game.players[sessionID].srcX = Math.floor(game.players[sessionID].countAnimation/5) * 20;
         }
         else
         {   
-            game.players[socket.id].srcY = 0;
-            game.players[socket.id].srcX = 0;
-            game.players[socket.id].countAnimation = 0;  
+            game.players[sessionID].srcY = 0;
+            game.players[sessionID].srcX = 0;
+            game.players[sessionID].countAnimation = 0;
+            socket.emit('player-move', 'noMove', walls, fixedWalls);
         }
 
         if(bombFlag)
         {
-            var bomb = new Bomb(game.players[socket.id].posX, game.players[socket.id].posY, 40, 40);
-			bomb.bombPosition(tileSize,game.players[socket.id].posX, game.players[socket.id].posY);
+            var bomb = new Bomb(game.players[sessionID].posX, game.players[sessionID].posY, 40, 40);
+			bomb.bombPosition(tileSize,game.players[sessionID].posX, game.players[sessionID].posY);
             bombs.push(bomb);
             bombFlag = false;
         }
 
-        game.players[socket.id].posX = Math.max(0, Math.min(cnv.width - game.players[socket.id].posX, game.players[socket.id].posX));
-        game.players[socket.id].posY = Math.max(0, Math.min(cnv.height - game.players[socket.id].posY, game.players[socket.id].posY));
+        game.players[sessionID].posX = Math.max(0, Math.min(cnv.width - game.players[sessionID].width, game.players[sessionID].posX));
+        game.players[sessionID].posY = Math.max(0, Math.min(cnv.height - game.players[sessionID].height, game.players[sessionID].posY));
 
 
         for (var i in bombs)
         {
             var bomb = bombs[i];
 
-            if (colisaoBomba(bomb, game.players[socket.id])== 0)
+            if (colisaoBomba(bomb, game.players[sessionID])== 0)
 			{
 				if(bomb.tempo == 0)
 				{
@@ -298,13 +297,16 @@
             var wall = walls[i];
 
             if(wall.visible)
-                block(game.players[socket.id], wall);
+            {
+                block(game.players[sessionID], wall);
+            }
+                
         }
 
         for(var i in fixedWalls)
         {
             var fixedWall = fixedWalls[i];
-            block(game.players[socket.id], fixedWall);
+            block(game.players[sessionID], fixedWall);   
         }
 		primeiraVez++;
     }
@@ -369,15 +371,15 @@
             }  
         }
 
-        for (var i in sprites)
+        var index = 0;
+        for (var i in game.players)
         {
-            spr = sprites[i];
-            
-            ctx.drawImage(
-                imgBomberman, 
-                spr.srcX, spr.srcY, 22, 32, spr.posX, spr.posY, 50, 50
-            );
-            //(img,sx,sy,swidth,sheight,x,y,width,height);
+            spr = game.players[i];
+                ctx.drawImage(
+                    imgBomberman, 
+                    spr.srcX, spr.srcY, 22, 32, spr.posX, spr.posY, 50, 50
+                );
+            index++;
         }
 
 	}
@@ -391,13 +393,13 @@
         var casaDestXOLD = ((Math.floor(player.posX/tileSize) * tileSize) + tileSize/2) - 20;
 
         var DistX = Math.abs((bomb.posX + bomb.width/2) - (player.posX + player.width/2));
-        var DistY = Math.abs((bomb.posY + bomb.height/2) - (player.posY + game.players[socket.id].height/2));
+        var DistY = Math.abs((bomb.posY + bomb.height/2) - (player.posY + game.players[sessionID].height/2));
         
         //console.log("DistX = "+casaDestX+"  DistY = "+casaDestY);
         
         if((DistX > (bomb.width)) || (DistY > (bomb.height)))
         {
-            block(game.players[socket.id], bomb);
+            block(game.players[sessionID], bomb);
         }
         
         return 1;
@@ -405,35 +407,6 @@
 		
 		
 	}
-     
-    function createGame() {
-        console.log('> Starting new game')
-      
-        let game = {
-          //canvasWidth: 35,
-          //canvasHeight: 30,
-          players: {},
-          addPlayer,
-          removePlayer,
-          //movePlayer,
-        }
-      
-        function addPlayer(socketId) {
-          
-      
-        }
-      
-        function removePlayer(socketId) {
-          delete game.players[socketId]
-        }
-      
-        function movePlayer(socketId, direction) {
-          const player = game.players[socketId]
-      
-          return game.players[socket.id];
-        }
-        return game;
-      }
         
 
     
