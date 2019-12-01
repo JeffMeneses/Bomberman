@@ -236,8 +236,8 @@
             bombFlag = false;
         }
 
-        //player.posX = Math.max(0, Math.min(cnv.width - player.posX, player.posX));
-        //player.posY = Math.max(0, Math.min(cnv.height - player.posY, player.posY));
+        player.posX = Math.max(0, Math.min(cnv.width - player.width, player.posX));
+        player.posY = Math.max(0, Math.min(cnv.height - player.height, player.posY));
 
 
         for (var i in bombs)
@@ -407,7 +407,7 @@
 	function colisaoBomba(bomb, player)
 	{
 
-        console.log("Bomba[posX] = "+bomb.posX+"  Bomba[posY] = "+bomb.posY);
+        //console.log("Bomba[posX] = "+bomb.posX+"  Bomba[posY] = "+bomb.posY);
 				
 		var casaDestYOLD = ((Math.floor(player.posY/tileSize) * tileSize) + tileSize/2) - 20;		
         var casaDestXOLD = ((Math.floor(player.posX/tileSize) * tileSize) + tileSize/2) - 20;
@@ -557,29 +557,38 @@
 					{
 						var fixedW = fixedWalls[j];
 						
-						if(fixedW.posX == grass.posX - contRaio && fixedW.posY == grass.posY)
+						
+						if(fixedW.posX == (grass.posX+50) - contRaio && fixedW.posY == grass.posY)
 						{
 							auxFogo = 1;
 							break;
 						}
 						else
-							auxFogo = 0;
-						
-						if(auxFogo == 0)
 						{
-							var fire = new Fire(bomb.posX + contRaio, bomb.posY, tileSize, tileSize, "#01005a");
-							fires.push(fire);
+							//console.log('fixedW.posX['+fixedW.posX+']'+' == grass.posX['+grass.posX+' - contRaio['+contRaio+']')
+							auxFogo = 0;
 						}
+							
+						
+						
 					}
+					if(auxFogo == 0)
+					{
+						console.log('x');
+						var fire = new Fire(bomb.posX + contRaio, bomb.posY, tileSize, tileSize, "#01005a");
+						console.log(fire);
+						fires.push(fire);
+					}
+					
 				}
 	
-				else if(grass.posX == bomb.posX -5 && grass.posY == bomb.posY + contRaio -5) //coluna baixo
+				if(grass.posX == bomb.posX -5 && grass.posY == bomb.posY + contRaio -5) //coluna baixo
 				{
 					for(var j in fixedWalls)
 					{
 						var fixedW = fixedWalls[j];
 						
-						if(fixedW.posX == grass.posX && fixedW.posY == grass.posY - contRaio)
+						if(fixedW.posX == grass.posX && fixedW.posY == (grass.posY+50) - contRaio)
 						{
 							auxFogo = 1;
 							break;
@@ -587,21 +596,22 @@
 						else
 							auxFogo = 0;
 						
-						if(auxFogo == 0)
+						
+					}
+					if(auxFogo == 0)
 						{
 							var fire = new Fire(bomb.posX , bomb.posY + contRaio, tileSize, tileSize, "#01005a");
 							fires.push(fire);
 						}
-					}
 				}
 
-				else if(grass.posX == bomb.posX -5 && grass.posY == bomb.posY - contRaio -5) //linha esquerda
+				else if((grass.posX == bomb.posX - contRaio -5 && grass.posY == bomb.posY -5)) //linha esquerda
 				{
 					for(var j in fixedWalls)
 					{
 						var fixedW = fixedWalls[j];
 						
-						if(fixedW.posX == grass.posX && fixedW.posY == grass.posY - contRaio)
+						if(fixedW.posX == (grass.posX+50) + contRaio && fixedW.posY == grass.posY)
 						{
 							auxFogo = 1;
 							break;
@@ -609,21 +619,22 @@
 						else
 							auxFogo = 0;
 						
-						if(auxFogo == 0)
+						
+					}
+					if(auxFogo == 0)
 						{
-							var fire = new Fire(bomb.posX , bomb.posY - contRaio, tileSize, tileSize, "#01005a");
+							var fire = new Fire(bomb.posX - contRaio, bomb.posY, tileSize, tileSize, "#01005a");
 							fires.push(fire);	
 						}
-					}
 				}
-	
-				else if(grass.posX == bomb.posX - contRaio -5 && grass.posY == bomb.posY -5) //coluna cima
+
+				else if(grass.posX == bomb.posX -5 && grass.posY == bomb.posY - contRaio -5) //coluna cima
 				{
 					for(var j in fixedWalls)
 					{
 						var fixedW = fixedWalls[j];
 						
-						if(fixedW.posX == grass.posX + contRaio && fixedW.posY == grass.posY)
+						if(fixedW.posX == grass.posX && fixedW.posY == (grass.posY+50) + contRaio)
 						{
 							auxFogo = 1;
 							break;
@@ -631,12 +642,13 @@
 						else
 							auxFogo = 0;
 						
-						if(auxFogo == 0)
+						
+					}
+					if(auxFogo == 0)
 						{
-							var fire = new Fire(bomb.posX - contRaio, bomb.posY , tileSize, tileSize, "#01005a");
+							var fire = new Fire(bomb.posX, bomb.posY - contRaio, tileSize, tileSize, "#01005a");
 							fires.push(fire);
 						}
-					}
 				}
 				
 				auxFogo = 1;
