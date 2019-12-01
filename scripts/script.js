@@ -463,7 +463,8 @@
 						grasses.push(grass);
 					//	var fire = new Fire(wall.posX, wall.posY, tileSize, tileSize, "#01005a");
 					//	fires.push(fire);
-						walls.splice(i,1);
+						//walls.splice(i,1);
+						walls[i] = 0;
 					}
 				}
 				else if(wall.posY == bomb.posY + contRaio -5 && wall.posX == bomb.posX - 5)  //coluna baixo
@@ -487,7 +488,8 @@
 						grasses.push(grass);
 					//	var fire = new Fire(wall.posX, wall.posY, tileSize, tileSize, "#01005a");
 						//fires.push(fire);
-						walls.splice(i,1);
+						//walls.splice(i,1);
+						walls[i] = 0;
 					}
 				}
 				else if(wall.posY == bomb.posY - contRaio -5 && wall.posX == bomb.posX - 5)  //coluna cima
@@ -511,7 +513,8 @@
 						grasses.push(grass);
 					//	var fire = new Fire(wall.posX, wall.posY, tileSize, tileSize, "#01005a");
 					//	fires.push(fire);
-						walls.splice(i,1);
+						//walls.splice(i,1);
+						walls[i] = 0;
 					}
 				}
 				else if(wall.posX == bomb.posX - contRaio -5 && wall.posY == bomb.posY - 5) //linha esquerda
@@ -535,7 +538,8 @@
 						grasses.push(grass);
 						//var fire = new Fire(wall.posX, wall.posY, tileSize, tileSize, "#01005a");
 					//	fires.push(fire);
-						walls.splice(i,1);
+						//walls.splice(i,1);
+						walls[i] = 0;
 					}
 				}
 				auxWalls =1;
