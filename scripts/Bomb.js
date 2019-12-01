@@ -1,5 +1,3 @@
-//const Sprite = require('./Sprite')
-
 class Bomb
 {
     constructor(posX, posY, width, height, color)
@@ -10,7 +8,8 @@ class Bomb
         this.height = height;
         this.color = color;
 		this.visible = true;
-        this.tempo = 120;
+		this.tempo = 120;
+		this.raioExplosao = 100;
     }
 	
 	bombPosition(tamanho, x, y)

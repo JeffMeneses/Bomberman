@@ -43,10 +43,18 @@ io.on('connection', function(socket){
       })
     })
 
+
+    /*socket.on('set-fire', (fire) =>{
+      console.log('fire')
+      socket.broadcast.emit('fire-update', fire)
+    })*/
+    
     socket.on('set-bomb', (bombs, tileSize) =>{
       const bomb = game.setBomb(socket.id, bombs, tileSize)
       socket.broadcast.emit('bomb-update', bomb)
     })
+
+    
 
 
     socket.on('disconnect', function()
@@ -70,12 +78,17 @@ function createGame() {
     //canvasHeight: 30,
     players: {},
     bombs: [],
+    fires: [],
+    //grasses: [],
+    //walls: [],
+    fixedWalls: [],
     addPlayer,
     removePlayer,
     movePlayer,
     block,
     setBomb,
     colisaoBomba,
+    setFire,
   }
 
   function addPlayer(socketId) {
@@ -153,14 +166,7 @@ function createGame() {
     {
       var bomb = bombs[i];
 
-      if (colisaoBomba(bomb, player)== 0)
-      {
-        if(bomb.tempo == 0)
-        {
-          console.log("O Jogador Morreu!");
-          break;
-        }
-      }
+      colisaoBomba(bomb, player);
 
       if(bomb.tempo)
       {
@@ -248,6 +254,11 @@ function createGame() {
     //bombs.push(bomb);
 
     return bomb;
+  }
+
+  function setFire(fire)
+  {
+    game.fires.push(fire);
   }
 
 
