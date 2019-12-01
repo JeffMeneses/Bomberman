@@ -1,4 +1,4 @@
-(function ()
+window.onload = function()
 {
     // Client
     let connected = false;
@@ -10,8 +10,8 @@
 
     socket.on('connect', () => {
         sessionID = socket.id;
-        connected = true
-        console.log('> Connected to server')
+        connected = true;
+        console.log('> Connected to server');
     })
 
     socket.on('disconnect', () => {
@@ -32,6 +32,14 @@
     socket.on('player-update', (player) => {
         if(connected)
         game.players[player.socketId] = player.newState;
+    })
+
+    socket.on('bomb-update', (bomb) =>{
+        if(connected)
+        game.bombs.push(bomb)
+        console.log("> the bomb has been set")
+        console.log(bomb);
+        console.log(game.bombs[0]);
     })
 
 
@@ -218,26 +226,26 @@
         {
             game.players[sessionID].posX -= game.players[sessionID].speed;
             game.players[sessionID].srcY = 100;
-            socket.emit('player-move', 'left', walls, fixedWalls);
+            socket.emit('player-move', 'left', walls, fixedWalls, game.bombs);
         }
         else if(mvRight && !mvLeft)
         {
             game.players[sessionID].posX += game.players[sessionID].speed;
             game.players[sessionID].srcY = 34;
-            socket.emit('player-move', 'right', walls, fixedWalls);
+            socket.emit('player-move', 'right', walls, fixedWalls, game.bombs);
         }
 
         if(mvUp && !mvDown)
         {
             game.players[sessionID].posY -= game.players[sessionID].speed;
             game.players[sessionID].srcY = 66;
-            socket.emit('player-move', 'up', walls, fixedWalls);
+            socket.emit('player-move', 'up', walls, fixedWalls, game.bombs);
         }
         else if(mvDown && !mvUp)
         {
             game.players[sessionID].posY += game.players[sessionID].speed;
             game.players[sessionID].srcY = 0;
-            socket.emit('player-move', 'down', walls, fixedWalls);
+            socket.emit('player-move', 'down', walls, fixedWalls, game.bombs);
         }
 
         if((mvLeft || mvRight || mvUp || mvDown))
@@ -253,24 +261,25 @@
             game.players[sessionID].srcY = 0;
             game.players[sessionID].srcX = 0;
             game.players[sessionID].countAnimation = 0;
-            socket.emit('player-move', 'noMove', walls, fixedWalls);
+            socket.emit('player-move', 'noMove', walls, fixedWalls, game.bombs);
         }
 
         if(bombFlag)
         {
-            var bomb = new Bomb(game.players[sessionID].posX, game.players[sessionID].posY, 40, 40);
+            var bomb = new Bomb(game.players[sessionID].posX, game.players[sessionID].posY, 40, 40, 'red');
 			bomb.bombPosition(tileSize,game.players[sessionID].posX, game.players[sessionID].posY);
-            bombs.push(bomb);
+            game.bombs.push(bomb);
             bombFlag = false;
+            socket.emit('set-bomb', game.bombs, tileSize);
         }
 
         game.players[sessionID].posX = Math.max(0, Math.min(cnv.width - game.players[sessionID].width, game.players[sessionID].posX));
         game.players[sessionID].posY = Math.max(0, Math.min(cnv.height - game.players[sessionID].height, game.players[sessionID].posY));
 
 
-        for (var i in bombs)
+        for (var i in game.bombs)
         {
-            var bomb = bombs[i];
+            var bomb = game.bombs[i];
 
             if (colisaoBomba(bomb, game.players[sessionID])== 0)
 			{
@@ -288,7 +297,7 @@
             } 
 			else
 			{
-				bombs.splice(i,1);
+                game.bombs.splice(i,1);
 			}
         }
 
@@ -357,9 +366,9 @@
 
 // bomba
 
-        for (var i in bombs)
+        for (var i in game.bombs)
         {
-            var bomb = bombs[i];
+            var bomb = game.bombs[i];
 
             if(bomb.tempo)
             {
@@ -411,4 +420,4 @@
 
     
 
-}());
+}

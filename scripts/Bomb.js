@@ -1,8 +1,15 @@
-class Bomb extends Sprite
+//const Sprite = require('./Sprite')
+
+class Bomb
 {
     constructor(posX, posY, width, height, color)
     {
-        super(posX, posY, width, height, color);
+		this.posX = posX;
+        this.posY = posY;
+        this.width = width;
+        this.height = height;
+        this.color = color;
+		this.visible = true;
         this.tempo = 120;
     }
 	
@@ -19,8 +26,9 @@ class Bomb extends Sprite
 
 		
 		casaDestX = ((Math.floor(auxX/tamanho) * tamanho) + tamanho/2) - 20;
-		this.posX = casaDestX;	
-		
+		this.posX = casaDestX;			
 		
 	}
 }
+
+module.exports = Bomb;

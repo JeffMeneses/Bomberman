@@ -6,15 +6,16 @@ const io = require('socket.io')(webServer)
 let game = createGame();
 let maxConcurrentConnections = 4;
 
-var Character = require('./Character');
-
-
+const Character = require('./Character');
+const Bomb = require('./Bomb');
 
 webApp.use(express.static('./'));
 
 webApp.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
+  
 })
+
 
 io.on('connection', function(socket){
   console.log(io.engine.clientsCount);
@@ -33,13 +34,18 @@ io.on('connection', function(socket){
       newState: playerState
     })
     
-    socket.on('player-move', (direction, walls, fixedWalls) => {
-      game.movePlayer(socket.id, direction, walls, fixedWalls)
+    socket.on('player-move', (direction, walls, fixedWalls, bombs) => {
+      game.movePlayer(socket.id, direction, walls, fixedWalls, bombs)
   
       socket.broadcast.emit('player-update', {
         socketId: socket.id,
         newState: game.players[socket.id]
       })
+    })
+
+    socket.on('set-bomb', (bombs, tileSize) =>{
+      const bomb = game.setBomb(socket.id, bombs, tileSize)
+      socket.broadcast.emit('bomb-update', bomb)
     })
 
 
@@ -63,10 +69,13 @@ function createGame() {
     //canvasWidth: 35,
     //canvasHeight: 30,
     players: {},
+    bombs: [],
     addPlayer,
     removePlayer,
     movePlayer,
     block,
+    setBomb,
+    colisaoBomba,
   }
 
   function addPlayer(socketId) {
@@ -92,7 +101,7 @@ function createGame() {
     delete game.players[socketId]
   }
 
-  function movePlayer(socketId, direction, walls, fixedWalls) {
+  function movePlayer(socketId, direction, walls, fixedWalls, bombs) {
     const player = game.players[socketId]
 
     if(direction === 'left')
@@ -138,6 +147,31 @@ function createGame() {
     player.posX = Math.max(0, Math.min(650 - player.width, player.posX));
     player.posY = Math.max(0, Math.min(550 - player.height, player.posY));
     
+
+//
+    for (var i in bombs)
+    {
+      var bomb = bombs[i];
+
+      if (colisaoBomba(bomb, player)== 0)
+      {
+        if(bomb.tempo == 0)
+        {
+          console.log("O Jogador Morreu!");
+          break;
+        }
+      }
+
+      if(bomb.tempo)
+      {
+        bomb.tempo -= 1;
+      } 
+      else
+      {
+        bombs.splice(i,1);
+      }
+    }
+// 
     for(var i in walls)
     {
       var wall = walls[i];
@@ -185,6 +219,35 @@ function createGame() {
                   objA.posX -= overlapX;
           }
       }
+  }
+
+  function colisaoBomba(bomb, player)
+	{
+      const tileSize = 50;
+				
+		    var casaDestYOLD = ((Math.floor(player.posY/tileSize) * tileSize) + tileSize/2) - 20;		
+        var casaDestXOLD = ((Math.floor(player.posX/tileSize) * tileSize) + tileSize/2) - 20;
+
+        var DistX = Math.abs((bomb.posX + bomb.width/2) - (player.posX + player.width/2));
+        var DistY = Math.abs((bomb.posY + bomb.height/2) - (player.posY + player.height/2));
+        
+        if((DistX > (bomb.width)) || (DistY > (bomb.height)))
+        {
+            block(player, bomb);
+        }
+        
+        return 1;
+
+	}
+
+  function setBomb(socketId, bombs, tileSize) {
+    const player = game.players[socketId]
+
+    var bomb = new Bomb(player.posX, player.posY, 40, 40, 'red');
+    bomb.bombPosition(tileSize, player.posX, player.posY);
+    //bombs.push(bomb);
+
+    return bomb;
   }
 
 
