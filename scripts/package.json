@@ -1,38 +1,24 @@
 {
-  "name": "gitpod-bot",
-  "version": "0.0.0",
-  "description": "Gitpod Bot",
-  "author": "TypeFox <contact@typefox.io> (http://typefox.io)",
-  "license": "ISC",
-  "repository": "https://github.com/gitpod-io/gitpod-bot.git",
-  "homepage": "https://github.com/gitpod-io/gitpod-bot",
-  "bugs": "https://github.com/gitpod-io/gitpod-bot/issues",
-  "keywords": [
-    "probot",
-    "github",
-    "gitpod",
-    "probot-app"
-  ],
+  "name": "meu-primeiro-jogo-multiplayer",
+  "version": "1.0.0",
+  "description": "Um jogo multiplayer bastante simples para testarmos o Socket.io",
   "scripts": {
-    "prepare": "npm run build",
-    "build": "tsc",
-    "watch": "tsc -w",
-    "dev": "nodemon --exec \"npm start\"",
-    "start": "probot run ./lib/index.js",
-    "now-start": "PRIVATE_KEY=$(echo $PRIVATE_KEY_BASE64 | base64 -d) npm start"
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/filipedeschamps/meu-primeiro-jogo-multiplayer.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/filipedeschamps/meu-primeiro-jogo-multiplayer/issues"
+  },
+  "homepage": "https://github.com/filipedeschamps/meu-primeiro-jogo-multiplayer#readme",
   "dependencies": {
-    "probot": "^7.0.0",
-    "probot-config": "^0.2.0",
-    "probot-scheduler": "^1.2.0"
-  },
-  "devDependencies": {
-    "@types/node": "^10.5.2",
-    "nodemon": "^1.17.2",
-    "smee-client": "^1.0.2",
-    "typescript": "^3.0.0"
-  },
-  "engines": {
-    "node": "^8.3.0"
+    "express": "^4.17.1",
+    "nodemon": "^1.19.1",
+    "socket.io": "^2.2.0"
   }
 }
