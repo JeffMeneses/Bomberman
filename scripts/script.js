@@ -19,6 +19,10 @@ window.onload = function()
         connected = false
     })
 
+    socket.on('player-remove', (socketId) => {
+        delete game.players[socketId]
+    })
+
     // INICIANDO GAME
     socket.on('boot', function(gameInicialState)
     {
