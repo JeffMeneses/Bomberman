@@ -25,46 +25,49 @@
                 top: 0;
                 bottom: 0;  
                 
-                width: 34.2%;
+                width: 80vmin;
                 height: 100%;
                 
             }
             
             #controles{
                 
-                width: 100%;
+                width: 100vmin;
                 margin-left: 10%;
                 
             }
 
             .controllButton{
+                position:relative;
                 margin: 0px;
                 padding: 0px;
-                width: 100px;
-                height: 100px;
+                width: 10%;
+                height: 10%;
                 user-select: none;
 
             }
 
             #leftButton{
-                position: relative;
-                top: 100px;
+                top: 88px;
             }
 
             #RightButton{
-                position: relative;
-                top: 100px;
+                top: 88px;
+            }
+
+            #topbutton
+            {
+               
             }
 
             #downButton{
-                position: relative;
-                top: 100px;
-                right: 208px;
+                top: 1px;
+                margin-left: 10.4%;
             }
 
             #bombButton{
-                position: relative;
-                top: 100px;
+
+                margin-left: 20.8%;
             }
 
             
@@ -81,7 +84,7 @@
             <div id="controles" style="margin-top: 20px">
                 <button class= "controllButton" id="leftButton">LEFT</button>
                 <button class= "controllButton" id="topButton">TOP</button>
-                <button class= "controllButton" id="rightButton">RIGHT</button>
+                <button class= "controllButton" id="rightButton">RIGHT</button><br>
                 <button class= "controllButton" id="downButton">DOWN</button>
                 <button class= "controllButton" id="bombButton">BOMB</button>
             </div>
