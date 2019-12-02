@@ -1,7 +1,16 @@
 const express = require('express')
+const bodyparser = require('body-parser');
 const webApp = express()
 const webServer = require('http').createServer(webApp)
 const io = require('socket.io')(webServer)
+const cors = require('cors');
+const mongoose = require('mongoose');
+const login = require('./login');
+
+webApp.use(cors());
+webApp.use(express.json());
+
+
 
 let game = createGame();
 let maxConcurrentConnections = 4;
@@ -9,12 +18,37 @@ let maxConcurrentConnections = 4;
 const Character = require('./Character');
 const Bomb = require('./Bomb');
 
-webApp.use(express.static('./'));
-
 webApp.get('/', function(req, res){
+  res.sendFile(__dirname + '/login.html');
+  
+})
+
+webApp.get('/paginaGame', function(req, res){
   res.sendFile(__dirname + '/index.html');
   
 })
+
+webApp.use(express.static('./'));
+
+mongoose.Promise = global.Promise; //USAR MONGO GLOBALMENTE
+
+mongoose.connect(
+    'mongodb://localhost:27017/api', 
+    {useUnifiedTopology: true,
+        useNewUrlParser: true 
+    }).then(() => {console.log('Mongoose conectado');
+    }).catch((err) => {console.log('Erro ao conectar...: ' + err);
+    });
+
+    webApp.use(express.static(__dirname));
+    //app.use(express.static("public"));
+    
+    //body-parser config
+    webApp.use(bodyparser.urlencoded({extended: false}));
+    webApp.use(bodyparser.json());
+    webApp.use('/login', login);
+
+
 
 
 io.on('connection', function(socket){
