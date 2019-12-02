@@ -182,6 +182,7 @@ window.onload = function()
     function touchStartHandler(e)
     {
         var key = e.changedTouches[0].target.id;
+        console.log(e);
         console.log(key);
 
         switch(key)
