@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <title>BomberMan</title>
+        <meta meta name="viewport" content= "width=device-width, user-scalable=no" />
+        <style>
+
+            #canvasDiv{
+            
+                margin: 0 auto;
+            }
+
+            body{
+                margin: 0;
+                padding: 0;
+                
+            }
+
+            #content{
+                position: absolute;
+
+                margin: auto;
+                position: absolute;
+                left:0;
+                right: 0;
+                top: 0;
+                bottom: 0;  
+                
+                width: 80vmin;
+                height: 100%;
+                
+            }
+            
+            #controles{
+                
+                width: 100vmin;
+                margin-left: 10%;
+                
+            }
+
+            .controllButton{
+                position:relative;
+                margin: 0px;
+                padding: 0px;
+                width: 10%;
+                height: 10%;
+                user-select: none;
+
+            }
+
+            #leftButton{
+                top: 88px;
+            }
+
+            #RightButton{
+                top: 88px;
+            }
+
+            #topbutton
+            {
+               
+            }
+
+            #downButton{
+                top: 1px;
+                margin-left: 10.4%;
+            }
+
+            #bombButton{
+
+                margin-left: 20.8%;
+            }
+
+            
+
+        </style>
+    </head>
+
+    <body>
+        <div id="content">
+            <div id ="canvasDiv" style="margin: 0">
+                <canvas width= "650" height = "550" style="border: solid;"></canvas>
+            </div>
+
+            <div id="controles" style="margin-top: 20px">
+                <button class= "controllButton" id="leftButton">LEFT</button>
+                <button class= "controllButton" id="topButton">TOP</button>
+                <button class= "controllButton" id="rightButton">RIGHT</button><br>
+                <button class= "controllButton" id="downButton">DOWN</button>
+                <button class= "controllButton" id="bombButton">BOMB</button>
+            </div>
+            
+            
+            <script src="Character.js"></script>
+            <script src="Bomb.js"></script>
+            <script src="Fire.js"></script>
+            <script src="Grass.js"></script>
+            <script src="Wall.js"></script>
+            <script src="FixedWall.js"></script>
+            <script src="/socket.io/socket.io.js"></script>
+            <script src="script.js"></script>
+            
+        </div>
+    </body>
+</html>
