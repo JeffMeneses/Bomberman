@@ -1,0 +1,9 @@
+function validaLogin()
+{
+
+}
+
+function validaCadastro()
+{
+ 
+}
