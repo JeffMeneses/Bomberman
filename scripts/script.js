@@ -183,17 +183,59 @@ window.onload = function()
     window.addEventListener("keydown", keydownHandler, false);
     window.addEventListener("keyup", keyupHandler, false);
 
-    window.querySelector(".leftButton").addEventListener("touchstart", touchStartHandler, false);
-    window.querySelector(".leftButton").addEventListener("touchend", touchEndHandler, false);
+    window.addEventListener("touchstart", touchStartHandler, false);
+    window.addEventListener("touchend", touchEndHandler, false);
 
     function touchStartHandler(e)
     {
-        alert("toquei");
+        var key = e.changedTouches[0].target.id;
+        console.log(key);
+
+        switch(key)
+        {
+            case 'leftButton':
+                mvLeft = true;
+                break;
+            case 'topButton':
+                mvUp = true;
+                break;
+            case 'rightButton':
+                mvRight = true;
+                break;
+            case 'downButton':
+                mvDown = true;
+                break;
+
+            case 'bombButton':
+                bombFlag = true;
+                break;
+        }
     }
 
     function touchEndHandler(e)
     {
-        alert("destoquei");
+        var key = e.changedTouches[0].target.id;
+
+        switch(key)
+        {
+            case 'leftButton':
+                mvLeft = false;
+                break;
+            case 'topButton':
+                mvUp = false;
+                break;
+            case 'rightButton':
+                mvRight = false;
+                break;
+            case 'downButton':
+                mvDown = false;
+                break;
+
+            case 'bombButton':
+                bombFlag = false;
+                break;
+        }
+    
     }
 
     function keydownHandler(e)
@@ -461,12 +503,14 @@ window.onload = function()
         for (var i in game.players)
         {
             spr = game.players[i];
-            
-            ctx.drawImage(
-                imgBomberman, 
-                spr.srcX, spr.srcY, 22, 32, spr.posX, spr.posY, 50, 50
-            );
-            //(img,sx,sy,swidth,sheight,x,y,width,height);
+
+            if(spr.visible)
+            {
+                ctx.drawImage(
+                    imgBomberman, 
+                    spr.srcX, spr.srcY, 22, 32, spr.posX, spr.posY, 50, 50
+                );
+            }
         }
         
 
