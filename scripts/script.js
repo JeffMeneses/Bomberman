@@ -83,12 +83,9 @@ window.onload = function()
     imgBomb.src = "bomb.png";
     imgFogo.src = "fogo.png";
 
-    var sprites = [];
     var walls = [];
     var fixedWalls = [];
-    var bombs = [];
     var grasses = [];
-	var fires = [];
     var tileSize = 50;
 
     imgWall.addEventListener("load", function(){
@@ -145,10 +142,6 @@ window.onload = function()
         }
     }
 
-    // Criação de sprites
-    //var player = new Character(0, 0, 50, 50, "#c3b831", 0, 0);
-    //sprites.push(player);
-
     function block(objA, objB)
     {
         var distX = (objA.posX + objA.width/2) - (objB.posX + objB.width/2); // Distancia em X entre os centros
@@ -189,6 +182,7 @@ window.onload = function()
     function touchStartHandler(e)
     {
         var key = e.changedTouches[0].target.id;
+        console.log(e);
         console.log(key);
 
         switch(key)
