@@ -1,18 +1,75 @@
 <html>
     <head>
         <title>BomberMan</title>
+
+        <style>
+            
+            .controles{
+                margin: 0px;
+                padding: 0px;
+                position: relative;
+                width: 500px;
+                height: 300px;
+                background-color: brown;
+            }
+
+            .controllButton{
+                margin: 0px;
+                padding: 0px;
+                width: 100px;
+                height: 100px;
+
+                user-select: none;
+
+            }
+
+            #leftButton{
+                position: relative;
+                top: 100px;
+            }
+
+            #RightButton{
+                position: relative;
+                top: 100px;
+            }
+
+            #downButton{
+                position: relative;
+                top: 200px;
+                right: 208px;
+            }
+
+            #bombButton{
+                position: relative;
+                top: 100px;
+            }
+
+            
+
+        </style>
     </head>
 
     <body>
         <div style="margin: 0">
-                <canvas width= "650" height = "550" style="border: solid;"></canvas>
+            <canvas width= "650" height = "550" style="border: solid;"></canvas>
+        </div>
+
+        <div id="controles" style="margin-top: 20px">
+            <button class= "controllButton" id="leftButton">LEFT</button>
+            <button class= "controllButton" id="topButton">TOP</button>
+            <button class= "controllButton" id="rightButton">RIGHT</button>
+            <button class= "controllButton" id="downButton">DOWN</button>
+            <button class= "controllButton" id="bombButton">BOMB</button>
         </div>
         
-        <script type="text/javascript" src="scripts\Sprite.js"></script>
-        <script type="text/javascript" src="scripts\Character.js"></script>
-        <script type="text/javascript" src="scripts\Bomb.js"></script>
-        <script type="text/javascript" src="scripts\Wall.js"></script>
-        <script type="text/javascript" src="scripts\FixedWall.js"></script>
-        <script type="text/javascript" src="scripts\script.js"></script>
+        
+        <script src="Character.js"></script>
+        <script src="Bomb.js"></script>
+        <script src="Fire.js"></script>
+		<script src="Grass.js"></script>
+        <script src="Wall.js"></script>
+        <script src="FixedWall.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="script.js"></script>
     </body>
 </html>
