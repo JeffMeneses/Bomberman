@@ -183,6 +183,19 @@ window.onload = function()
     window.addEventListener("keydown", keydownHandler, false);
     window.addEventListener("keyup", keyupHandler, false);
 
+    window.querySelector(".leftButton").addEventListener("touchstart", touchStartHandler, false);
+    window.querySelector(".leftButton").addEventListener("touchend", touchEndHandler, false);
+
+    function touchStartHandler(e)
+    {
+        alert("toquei");
+    }
+
+    function touchEndHandler(e)
+    {
+        alert("destoquei");
+    }
+
     function keydownHandler(e)
     {
         var key = e.keyCode;
